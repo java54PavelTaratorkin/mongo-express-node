@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "daa8fe00-0545-45d0-be5f-aebdcc4c4a24",
+		"name": "Mflix API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39991820"
+	},
+	"item": [
+		{
+			"name": "Add a New Comment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"movie_id\": \"573a1391f29313caabcd4567\",\n    \"name\": \"Test tester\",\n    \"email\": \"testman@example.com\",\n    \"text\": \"This movie was amazing!\",\n    \"date\": \"2024-11-16T10:00:00.000Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/mflix/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"mflix",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update an Existing Comment",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"commentId\": \"6745ed373cb9337b782bd1eb\",\n    \"text\": \"This is test's comment!!!!!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/mflix/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"mflix",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a Comment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/mflix/comments/6745ed373cb9337b782bd1eb",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"mflix",
+						"comments",
+						"6745ed373cb9337b782bd1eb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Comments for a Movie",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/mflix/comments/573a1391f29313caabcd4567",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"mflix",
+						"comments",
+						"573a1391f29313caabcd4567"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find Most IMDb-Rated Movies",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"genre\": \"Comedy\",\n    \"actor\": \"Will\",\n    \"amount\": 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/mflix/movies/rated",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"mflix",
+						"movies",
+						"rated"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
