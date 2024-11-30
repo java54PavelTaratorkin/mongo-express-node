@@ -1,86 +1,54 @@
-import MongoConnection from '../mongo/MongoConnection.mjs';
-import { ObjectId } from 'mongodb';
-
+import MongoConnection from '../mongo/MongoConnection.mjs'
+import { ObjectId } from 'mongodb'
 export default class MflixService {
-    #moviesCollection;
-    #commentsCollection;
-    #connection;
-
+    #moviesCollection
+    #commentsCollection
+    #connection
     constructor(uri, dbName, moviesCollection, commentsCollection) {
         this.#connection = new MongoConnection(uri, dbName);
         this.#moviesCollection = this.#connection.getCollection(moviesCollection);
         this.#commentsCollection = this.#connection.getCollection(commentsCollection);
-    }
 
+    }
     shutdown() {
         this.#connection.closeConnection();
     }
-
     async addComment(commentDto) {
-        // Add a new comment to the database
+
         const commentDB = this.#toComment(commentDto);
         const result = await this.#commentsCollection.insertOne(commentDB);
         commentDB._id = result.insertedId;
         return commentDB;
     }
-
-    #toComment(commentDto) {
-        // Convert movie_id to ObjectId
-        const movieId = ObjectId.createFromHexString(commentDto.movie_id);
-        return { ...commentDto, movie_id: movieId };
+    async updateCommentText({ text, commentId }) {
+        const commentUpdated = await this.#commentsCollection.findOneAndUpdate(
+            { _id: ObjectId.createFromHexString(commentId) },
+            { $set: { text } },
+            { returnNewDocument: true });
+        return commentUpdated;
     }
-
-    async updateComment(commentDto) {
-        // Update the text of a comment
-        const commentId = ObjectId.createFromHexString(commentDto.commentId);
-        const result = await this.#commentsCollection.updateOne(
-            { _id: commentId },
-            { $set: { text: commentDto.text } }
-        );
-        return result.modifiedCount;
-    }
-
     async deleteComment(id) {
-        // Delete a comment by ID
-        const commentId = ObjectId.createFromHexString(id);
-        const result = await this.#commentsCollection.deleteOne({ _id: commentId });
-        return result.deletedCount;
+        const toDeleteComment = await this.getComment(id);
+        if(!toDeleteComment){
+            throw {code: 404, text: "comment not found"};
+        }
+        await this.#commentsCollection.deleteOne({"_id":toDeleteComment._id});
+        return toDeleteComment;
     }
-
-    async getCommentsByMovie(id) {
-        // Retrieve comments by comment_id
-        const commentId = ObjectId.createFromHexString(id);
-        const result = await this.#commentsCollection.findOne({ _id: commentId });
-        return result;
+    async getComment(id) {
+        const mongoId = ObjectId.createFromHexString(id);
+        const comment = await this.#commentsCollection.findOne({"_id":mongoId});
+        return comment;
     }
-
-    async findMostRatedMovies(query) {
-        // Find the most IMDb-rated movies
-        const { year, genre, actor, amount } = query;
-
-        const pipeline = [
-            {
-                $match: {
-                    ...(year && { year }),
-                    ...(genre && { genres: genre }),
-                    ...(actor && { cast: { $regex: actor, $options: "i" } }),
-                },
-            },
-            { $sort: { "imdb.rating": -1 } },
-            { $limit: amount }, 
-            {
-                $project: {
-                    _id: 0,
-                    title: 1,
-                    year: 1,
-                    "imdb.rating": 1,
-                    genres: 1,
-                    cast: 1,
-                },
-            },
-        ];
-
-        const movies = await this.#moviesCollection.aggregate(pipeline).toArray();
-        return movies;
+    async getMostRatedMovies({genre, acter, year, amount}) {
+        const filter = {...year && {year}, ...acter &&{cast: {'$regex':acter}},
+         ...genre && {genres:genre}, 'imdb.rating':{'$ne':''}}
+         const result = await this.#moviesCollection.find(filter)
+         .sort({'imdb.rating':-1}).limit(amount).toArray();
+         return result;
+    }
+    #toComment(commentDto) {
+        const movieId = ObjectId.createFromHexString(commentDto.movie_id);
+        return { ...commentDto, 'movie_id': movieId }
     }
 }
