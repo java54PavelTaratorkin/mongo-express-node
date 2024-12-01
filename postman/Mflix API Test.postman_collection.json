@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"movie_id\": \"573a1391f29313caabcd4567\",\n    \"name\": \"Test tester\",\n    \"email\": \"testman@example.com\",\n    \"text\": \"This movie was amazing!\",\n    \"date\": \"2024-11-16T10:00:00.000Z\"\n}",
+					"raw": "{\n    \"movie_id\": \"573a1391f29313caabcd4567\",\n    \"name\": \"Pablo T\",\n    \"email\": \"pablo@example.com\",\n    \"text\": \"Amazing BEST movie!\",\n    \"date\": \"2024-11-16T10:00:00.000Z\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -42,7 +42,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"commentId\": \"6745ed373cb9337b782bd1eb\",\n    \"text\": \"This is test's comment!!!!!\"\n}",
+					"raw": "{\n    \"commentId\": \"674c9476e6a357a8aa268988\",\n    \"text\": \"This is SUPER test's comment!!!!!\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -65,37 +65,7 @@
 			"response": []
 		},
 		{
-			"name": "Delete a Comment",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3500/mflix/comments/6745ed373cb9337b782bd1eb",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3500",
-					"path": [
-						"mflix",
-						"comments",
-						"6745ed373cb9337b782bd1eb"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Comments for a Movie",
+			"name": "Get comment",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -112,7 +82,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3500/mflix/comments/573a1391f29313caabcd4567",
+					"raw": "http://localhost:3500/mflix/comments/674c9476e6a357a8aa268988",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -121,7 +91,37 @@
 					"path": [
 						"mflix",
 						"comments",
-						"573a1391f29313caabcd4567"
+						"674c9476e6a357a8aa268988"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a Comment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/mflix/comments/674c9476e6a357a8aa268988",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"mflix",
+						"comments",
+						"674c9476e6a357a8aa268988"
 					]
 				}
 			},
