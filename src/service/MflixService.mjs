@@ -1,85 +1,62 @@
-import MongoConnection from "../mongo/MongoConnection.mjs";
-import { ObjectId } from "mongodb";
-import { getError } from "../errors/errors.mjs";
-
+import { getError } from '../errors/error.mjs'
+import MongoConnection from '../mongo/MongoConnection.mjs'
+import { ObjectId } from 'mongodb'
 export default class MflixService {
-    #moviesCollection;
-    #commentsCollection;
-    #connection;
-
+    #moviesCollection
+    #commentsCollection
+    #connection
     constructor(uri, dbName, moviesCollection, commentsCollection) {
         this.#connection = new MongoConnection(uri, dbName);
         this.#moviesCollection = this.#connection.getCollection(moviesCollection);
         this.#commentsCollection = this.#connection.getCollection(commentsCollection);
-    }
 
+    }
     shutdown() {
         this.#connection.closeConnection();
     }
-
     async addComment(commentDto) {
+
         const commentDB = this.#toComment(commentDto);
-        const result = await this.#commentsCollection.insertOne(commentDB);
-        if (!result.insertedId) {
-            throw getError(500, "Failed to add comment");
+        const movie = await this.#moviesCollection.findOne({_id: commentDB.movie_id});
+        if(!movie) {
+            throw getError(404, `movie with ObjectId ${commentDB.movie_id} doesn't exist`)
         }
+        const result = await this.#commentsCollection.insertOne(commentDB);
         commentDB._id = result.insertedId;
         return commentDB;
     }
-
     async updateCommentText({ text, commentId }) {
-        const toUpdateComment = await this.getComment(commentId);
-        const result = await this.#commentsCollection.updateOne(
+        const commentUpdated = await this.#commentsCollection.findOneAndUpdate(
             { _id: ObjectId.createFromHexString(commentId) },
-            { $set: { text } }
-        );
-        if (!result.modifiedCount) {
-            throw getError(500, "Failed to update comment text");
-        }
-        return { ...toUpdateComment, text };
+            { $set: { text } },
+            { returnNewDocument: true });
+        if (!commentUpdated)  {
+            throw getError(404, `comment with ObjectId ${commentId} not found`);
+        }  
+        return commentUpdated;
     }
-
     async deleteComment(id) {
         const toDeleteComment = await this.getComment(id);
-        const result = await this.#commentsCollection.deleteOne({ _id: toDeleteComment._id });
-        if (!result.deletedCount) {
-            throw getError(500, "Failed to delete comment");
-        }
+        await this.#commentsCollection.deleteOne({"_id":toDeleteComment._id});
         return toDeleteComment;
     }
-
     async getComment(id) {
         const mongoId = ObjectId.createFromHexString(id);
-        const comment = await this.#commentsCollection.findOne({ _id: mongoId });
-        if (!comment) {
+        const comment = await this.#commentsCollection.findOne({"_id":mongoId});
+        if(!comment) {
             throw getError(404, "Comment not found");
         }
         return comment;
     }
-
-    async getMostRatedMovies({ genre, actor, year, amount }) {
-        const filter = {
-            ...(year && { year }),
-            ...(actor && { cast: { $regex: actor, $options: "i" } }),
-            ...(genre && { genres: genre }),
-            "imdb.rating": { $ne: "" },
-        };
-    
-        const result = await this.#moviesCollection
-            .find(filter)
-            .sort({ "imdb.rating": -1 })
-            .limit(amount)
-            .toArray();
-    
-        if (!result.length) {
-            throw getError(404, "No movies found matching the criteria");
-        }
-    
-        return result;
+    async getMostRatedMovies({genre, acter, year, amount}) {
+        const filter = {...year && {year}, ...acter &&{cast: {'$regex':acter}},
+         ...genre && {genres:genre}, 'imdb.rating':{'$ne':''}}
+         const result = await this.#moviesCollection.find(filter)
+         .sort({'imdb.rating':-1}).limit(amount).toArray();
+         return result;
     }
-
     #toComment(commentDto) {
         const movieId = ObjectId.createFromHexString(commentDto.movie_id);
-        return { ...commentDto, movie_id: movieId };
+        return { ...commentDto, 'movie_id': movieId }
     }
 }
