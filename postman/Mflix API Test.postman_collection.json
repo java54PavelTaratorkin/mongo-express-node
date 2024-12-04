@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"movie_id\": \"573a1391f29313caabcd4567\",\n    \"name\": \"Pablo T\",\n    \"email\": \"pablo@example.com\",\n    \"text\": \"Amazing BEST movie!\",\n    \"date\": \"2024-11-16T10:00:00.000Z\"\n}",
+					"raw": "{\n    \"movie_id\": \"573a1398f29313caabceae08\",\n    \"email\": \"pablo@example.com\",\n    \"text\": \"Amazing BEST movie with Bruce Willis!\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -42,7 +42,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"commentId\": \"674c9476e6a357a8aa268988\",\n    \"text\": \"This is SUPER test's comment!!!!!\"\n}",
+					"raw": "{\n    \"commentId\": \"675056cf3d9df889d31b2303\",\n    \"text\": \"WOW, it is SUPER BEST MOVIE with Bruce Willis!\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -82,7 +82,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3500/mflix/comments/674c9476e6a357a8aa268988",
+					"raw": "http://localhost:3500/mflix/comments/675056cf3d9df889d31b2303",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -91,7 +91,7 @@
 					"path": [
 						"mflix",
 						"comments",
-						"674c9476e6a357a8aa268988"
+						"675056cf3d9df889d31b2303"
 					]
 				}
 			},
@@ -112,7 +112,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3500/mflix/comments/674c9476e6a357a8aa268988",
+					"raw": "http://localhost:3500/mflix/comments/675056cf3d9df889d31b2303",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -121,7 +121,7 @@
 					"path": [
 						"mflix",
 						"comments",
-						"674c9476e6a357a8aa268988"
+						"675056cf3d9df889d31b2303"
 					]
 				}
 			},
@@ -134,7 +134,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"genre\": \"Comedy\",\n    \"actor\": \"Will\",\n    \"amount\": 5\n}",
+					"raw": "{\n    \"genre\": \"Comedy\",\n    \"acter\": \"Bruce Willis\",\n    \"amount\": 5\n}",
 					"options": {
 						"raw": {
 							"language": "json"

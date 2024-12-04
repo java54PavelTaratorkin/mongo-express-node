@@ -20,6 +20,37 @@ export default class AccountsService {
         }
 
     }
+
+    async getAccount(username) {        
+        return this.#findAndValidateAccount(username);
+    }
+
+    async updateAccountPassword({ username, password }) {
+        this.#findAndValidateAccount(username);    
+        const hashPassword = bcrypt.hashSync(password, 10);
+        await this.#accounts.updateOne(
+            { _id: username },
+            { $set: { hashPassword } }
+        );    
+        return { username, password: hashPassword};
+    }
+
+    async deleteAccount(username) {
+        const account = await this.#findAndValidateAccount(username);
+        const result = await this.#accounts.deleteOne({_id:username});
+        if(result.deletedCount == 1) {
+            return account;
+        }
+    }
+
+    #findAndValidateAccount = async (username) => {
+        const account = await this.#accounts.findOne({ _id: username });
+        if (!account) {
+            throw getError(404, `Account for ${username} not found`);
+        }
+        return account;
+    };
+
     #toAccountDB(account) {
         const accountDB = {};
         accountDB._id = account.username;

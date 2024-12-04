@@ -1,13 +1,17 @@
 import Joi from "joi";
 import { ADD_ACCOUNT, ADD_UPDATE_COMMENT, DELETE_GET_COMMENT, GET_MOVIES_RATED } from "../config/pathes.mjs";
+
 export const schemaObjectId = Joi.string().hex().length(24).required();
+export const schemaAccountUsername = Joi.string().min(4).required();
+export const schemaAccountPassword = Joi.string().min(8).required();
+
 export const schemaCommentUpdate = Joi.object({
     commentId: schemaObjectId,
     text: Joi.string().required()
  
  });
  export const schemaAddComment = Joi.object({
-    movie_id:schemaObjectId,
+    movie_id:schemaObjectId,    
     email: Joi.string().email().required(),
     text: Joi.string()
  });
@@ -22,11 +26,19 @@ export const schemaCommentUpdate = Joi.object({
  });
  export const schemaAddAccount = Joi.object(
     {
-        username: Joi.string().min(4).required(),
+        username: schemaAccountUsername,
         email: Joi.string().email().required(),
-        password: Joi.string().min(8).required()
+        password: schemaAccountPassword
     }
  )
+
+ export const schemaUpdateAccountPassword = Joi.object(
+    {
+        username: schemaAccountUsername,
+        password: schemaAccountPassword
+    }
+ )
+
  export const schemaParams = Joi.object({
     id:schemaObjectId
  })
@@ -40,7 +52,8 @@ export const schemaCommentUpdate = Joi.object({
         POST: schemaGetRatedMovies
     },
     [ADD_ACCOUNT]: {
-        POST: schemaAddAccount
+        POST: schemaAddAccount,
+        PUT: schemaUpdateAccountPassword
     }
     
   }

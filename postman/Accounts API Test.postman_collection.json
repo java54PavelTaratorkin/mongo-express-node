@@ -1,0 +1,110 @@
+{
+	"info": {
+		"_postman_id": "303d56e5-0394-4eae-8fe5-b3d6e41884be",
+		"name": "Accounts API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39991820"
+	},
+	"item": [
+		{
+			"name": "Create an Account (POST)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"hulio_ivanez\",\n    \"email\": \"hulio@example.com\",\n    \"password\": \"iLoveLife888\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/accounts/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"accounts",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account (GET)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3500/accounts/account/hulio_ivanez",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"accounts",
+						"account",
+						"hulio_ivanez"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Account (DELETE)",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3500/accounts/account/hulio_ivanez",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"accounts",
+						"account",
+						"hulio_ivanez"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Password (PUT)",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"hulio_ivanez\",\n    \"password\": \"newSecurePassword456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/accounts/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"accounts",
+						"account"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
