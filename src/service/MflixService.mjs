@@ -29,7 +29,7 @@ export default class MflixService {
         const commentUpdated = await this.#commentsCollection.findOneAndUpdate(
             { _id: ObjectId.createFromHexString(commentId) },
             { $set: { text } },
-            { returnNewDocument: true });
+            { returnDocument: "after" });
         if (!commentUpdated)  {
             throw getError(404, `comment with ObjectId ${commentId} not found`);
         }  

@@ -9,8 +9,8 @@ export default class AccountsService {
         this.#accounts = this.#connection.getCollection('accounts');
     }
     async insertAccount(account) {
-        const accountDB = await this.#accounts.findOne({_id:account.username});
-        if(accountDB) {
+        const accountDB = await this.#accounts.findOne({ _id: account.username });
+        if (accountDB) {
             throw getError(400, `account for ${account.username} already exists`);
         }
         const toInsertAccount = this.#toAccountDB(account);
@@ -20,37 +20,28 @@ export default class AccountsService {
         }
 
     }
-
-    async getAccount(username) {        
-        return this.#findAndValidateAccount(username);
-    }
-
-    async updateAccountPassword({ username, password }) {
-        this.#findAndValidateAccount(username);    
-        const hashPassword = bcrypt.hashSync(password, 10);
-        await this.#accounts.updateOne(
+    async updatePassword({ username, newPassword }) {
+        const accountUpdated = await this.#accounts.findOneAndUpdate(
             { _id: username },
-            { $set: { hashPassword } }
-        );    
-        return { username, password: hashPassword};
-    }
-
-    async deleteAccount(username) {
-        const account = await this.#findAndValidateAccount(username);
-        const result = await this.#accounts.deleteOne({_id:username});
-        if(result.deletedCount == 1) {
-            return account;
+            { $set: { hashPassword: bcrypt.hashSync(newPassword, 10) } },
+            { returnDocument: "after" });
+        if (!accountUpdated) {
+            throw getError(404, `account ${username} not found`);
         }
+        return accountUpdated;
     }
-
-    #findAndValidateAccount = async (username) => {
+    async getAccount(username) {
         const account = await this.#accounts.findOne({ _id: username });
         if (!account) {
-            throw getError(404, `Account for ${username} not found`);
+            throw getError(404, `account ${username} not found`);
         }
         return account;
-    };
-
+    }
+    async deleteAccount(username) {
+        const account = await this.getAccount(username);
+        await this.#accounts.deleteOne({ _id: username });
+        return account;
+    }
     #toAccountDB(account) {
         const accountDB = {};
         accountDB._id = account.username;

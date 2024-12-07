@@ -1,21 +1,17 @@
 import Joi from "joi";
-import { ADD_ACCOUNT, ADD_UPDATE_COMMENT, DELETE_GET_COMMENT, GET_MOVIES_RATED } from "../config/pathes.mjs";
-
-export const schemaObjectId = Joi.string().hex().length(24).required();
-export const schemaAccountUsername = Joi.string().min(4).required();
-export const schemaAccountPassword = Joi.string().min(8).required();
-
-export const schemaCommentUpdate = Joi.object({
+import { ADD_UPDATE_ACCOUNT, ADD_UPDATE_COMMENT, GET_MOVIES_RATED } from "../config/pathes.mjs";
+ const schemaObjectId = Joi.string().hex().length(24).required();
+ const schemaCommentUpdate = Joi.object({
     commentId: schemaObjectId,
     text: Joi.string().required()
  
  });
- export const schemaAddComment = Joi.object({
-    movie_id:schemaObjectId,    
+  const schemaAddComment = Joi.object({
+    movie_id:schemaObjectId,
     email: Joi.string().email().required(),
     text: Joi.string()
  });
- export const schemaGetRatedMovies =Joi.object({
+  const schemaGetRatedMovies =Joi.object({
     year: Joi.number().integer(),
     genre: Joi.string().valid("Adventure", "Western", "Musical", "Short", "Family",
          "History", "Mystery", "Music", "Sport", "News", "Romance","Documentary", "War",
@@ -24,24 +20,20 @@ export const schemaCommentUpdate = Joi.object({
     acter: Joi.string(),
     amount: Joi.number().integer().positive().required() 
  });
- export const schemaAddAccount = Joi.object(
+ const schemaAddAccount = Joi.object(
     {
-        username: schemaAccountUsername,
+        username: Joi.string().min(4).required(),
         email: Joi.string().email().required(),
-        password: schemaAccountPassword
+        password: Joi.string().min(8).required()
     }
  )
-
- export const schemaUpdateAccountPassword = Joi.object(
-    {
-        username: schemaAccountUsername,
-        password: schemaAccountPassword
-    }
- )
-
  export const schemaParams = Joi.object({
     id:schemaObjectId
  })
+ const schemaUpdatePassword = Joi.object({
+    username: Joi.string().min(4).required(),
+    newPassword: Joi.string().min(8).required()
+ });
   const schemas = {
    [ ADD_UPDATE_COMMENT]: {
         POST:schemaAddComment,
@@ -51,10 +43,11 @@ export const schemaCommentUpdate = Joi.object({
     [GET_MOVIES_RATED]: {
         POST: schemaGetRatedMovies
     },
-    [ADD_ACCOUNT]: {
+    [ADD_UPDATE_ACCOUNT]: {
         POST: schemaAddAccount,
-        PUT: schemaUpdateAccountPassword
-    }
+        PUT: schemaUpdatePassword
+    },
+
     
   }
   export default schemas;
