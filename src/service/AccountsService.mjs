@@ -1,6 +1,8 @@
+import { VALID_ROLES } from "../config/constants.mjs";
 import { getError } from "../errors/error.mjs";
 import MongoConnection from "../mongo/MongoConnection.mjs"
 import bcrypt from 'bcrypt';
+
 export default class AccountsService {
     #accounts
     #connection
@@ -8,6 +10,7 @@ export default class AccountsService {
         this.#connection = new MongoConnection(connection_str, db_name);
         this.#accounts = this.#connection.getCollection('accounts');
     }
+
     async insertAccount(account) {
         const accountDB = await this.#accounts.findOne({ _id: account.username });
         if (accountDB) {
@@ -20,6 +23,7 @@ export default class AccountsService {
         }
 
     }
+
     async updatePassword({ username, newPassword }) {
         const accountUpdated = await this.#accounts.findOneAndUpdate(
             { _id: username },
@@ -30,6 +34,7 @@ export default class AccountsService {
         }
         return accountUpdated;
     }
+
     async getAccount(username) {
         const account = await this.#accounts.findOne({ _id: username });
         if (!account) {
@@ -37,16 +42,31 @@ export default class AccountsService {
         }
         return account;
     }
+
     async deleteAccount(username) {
         const account = await this.getAccount(username);
         await this.#accounts.deleteOne({ _id: username });
         return account;
     }
+
+    async setRole({ username, role }) {
+        const accountUpdated = await this.#accounts.findOneAndUpdate(
+            { _id: username },
+            { $set: { role: role } },
+            { returnDocument: "after" });
+        if (!accountUpdated) {
+            throw getError(404, `account ${username} not found`);
+        }
+        return accountUpdated;
+    }
+
     #toAccountDB(account) {
         const accountDB = {};
         accountDB._id = account.username;
         accountDB.email = account.email;
         accountDB.hashPassword = bcrypt.hashSync(account.password, 10);
+        accountDB.role = VALID_ROLES.USER;
         return accountDB;
     }
+
 }

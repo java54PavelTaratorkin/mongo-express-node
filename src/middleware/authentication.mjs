@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt'
 import { getError } from '../errors/error.mjs';
-const BASIC = "Basic ";
+import { BASIC_AUTH, SET_ROLE_PASSWORD, SET_ROLE_USERNAME, VALID_ROLES } from '../config/constants.mjs';
+
 export function authenticate(accountingService) {
     return async (req, res, next) => {
         const authHeader = req.header("Authorization")
         if (authHeader) {
-            if(authHeader.startsWith(BASIC)) {
+            if(authHeader.startsWith(BASIC_AUTH)) {
                 await basicAuth(authHeader, req, accountingService)
             }
         }
@@ -23,21 +24,23 @@ export function auth(...skipRoutes) {
     next();
    }
 }
-async function basicAuth(authHeader, req, accountingService) {
-    const userPasswordBase64 = authHeader.substring(BASIC.length);
+export async function basicAuth(authHeader, req, accountingService) {
+    const userPasswordBase64 = authHeader.substring(BASIC_AUTH.length);
     const userPasswordAscii = Buffer.from(userPasswordBase64, 'base64').toString("ascii");
-    const userPasswordTokens = userPasswordAscii.split(":");
-    try {
-        const account = await accountingService.getAccount(userPasswordTokens[0]);
-        if (account) {
-            if (await bcrypt.compare(userPasswordTokens[1], account.hashPassword)) {
+    const [username, password] = userPasswordAscii.split(":");
+
+    if (username === SET_ROLE_USERNAME && password === SET_ROLE_PASSWORD) {
+        req.user = username;
+        req.role = VALID_ROLES.ADMIN;
+    } else {
+        try {
+            const account = await accountingService.getAccount(username);
+            if (account && await bcrypt.compare(password, account.hashPassword)) {
                 req.user = account._id;
-                req.role = account.role || 'USER';
+                req.role = account.role || VALID_ROLES.USER;
             }
+        } catch (error) {
+            
         }
-    } catch (error) {
-        
     }
-
-
 }
