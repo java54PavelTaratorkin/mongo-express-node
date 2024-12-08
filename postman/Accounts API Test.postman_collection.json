@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"hulio_ivanez\",\n    \"email\": \"hulio@example.com\",\n    \"password\": \"iLoveLife888\"\n}",
+					"raw": "{\n    \"username\": \"pablo_torrez\",\n    \"email\": \"pablito@example.com\",\n    \"password\": \"iLoveLife555\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -38,6 +38,21 @@
 		{
 			"name": "Get Account (GET)",
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "amigoman",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "iLoveLife555",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -80,11 +95,26 @@
 		{
 			"name": "Update Password (PUT)",
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "newSecurePassword4567",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "amigoman",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"hulio_ivanez\",\n    \"password\": \"newSecurePassword456\"\n}",
+					"raw": "{\n    \"username\": \"amigoman\",\n    \"newPassword\": \"newSecurePassword4567\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -101,6 +131,51 @@
 					"path": [
 						"accounts",
 						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Role (PUT)",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "12345usEr54321",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "super_user",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"hulio_ivanez\",\n    \"role\": \"PREMIUM_USER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3500/accounts/account/role",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3500",
+					"path": [
+						"accounts",
+						"account",
+						"role"
 					]
 				}
 			},

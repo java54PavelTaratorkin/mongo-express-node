@@ -34,10 +34,13 @@ accounts_route.delete(DELETE_GET_ACCOUNT, asyncHandler(async (req, res) => {
 }))
 
 accounts_route.put(SET_ROLE_ACCOUNT, asyncHandler(async (req, res) => {
-    if(req.role != VALID_ROLES.ADMIN) {
+    const userPasswordBase64 = authHeader.substring(6);
+    const [username, password] = Buffer.from(userPasswordBase64, 'base64').toString('ascii').split(':');
+
+    if (username !== SET_ROLE_USERNAME || password !== SET_ROLE_PASSWORD) {
         throw getError(403, "");
     }
 
-    const account = await accountsService.setRole(req.body);
-   res.status(200).json(account);
-}))
+    const updatedAccount = await accountsService.setRole(req.body);
+    res.status(200).json(updatedAccount);
+}));

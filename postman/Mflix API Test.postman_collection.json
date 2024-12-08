@@ -9,6 +9,21 @@
 		{
 			"name": "Add a New Comment",
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iLoveLife555",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "pablo_torrez",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
