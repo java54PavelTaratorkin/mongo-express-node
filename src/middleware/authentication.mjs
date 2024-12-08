@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import { getError } from '../errors/error.mjs';
-import { BASIC_AUTH, SET_ROLE_PASSWORD, SET_ROLE_USERNAME, VALID_ROLES } from '../config/constants.mjs';
+import { BASIC_AUTH, SET_ROLE_PASSWORD, SET_ROLE_USERNAME, USER_REQ_NUM_LIMIT, USER_REQ_TIME_LIMIT, VALID_ROLES } from '../config/constants.mjs';
+const userRequestTracker = {};
 
 export function authenticate(accountingService) {
     return async (req, res, next) => {
@@ -42,5 +43,35 @@ export async function basicAuth(authHeader, req, accountingService) {
         } catch (error) {
             
         }
+    }
+}
+
+export function roleVerification() {
+    return (req, res, next) => {
+        const { user: username, role } = req;
+
+        if (role === VALID_ROLES.ADMIN) {
+            throw getError(403, "");
+        } else if (role === VALID_ROLES.USER) {
+            checkReqAccessLimit(username);
+        }
+        next();
+    };
+
+
+}
+
+function checkReqAccessLimit(username) {
+    const currentTime = Date.now();
+    const userData = userRequestTracker[username] || { count: 0, lastRequestTime: currentTime };
+
+    if (currentTime - userData.lastRequestTime > USER_REQ_TIME_LIMIT) {
+        userRequestTracker[username] = { count: 1, lastRequestTime: currentTime };
+    } else {
+        userData.count += 1;
+        if (userData.count > USER_REQ_NUM_LIMIT) {
+            throw getError(403, `Limit of ${USER_REQ_NUM_LIMIT} requests / ${Math.floor(USER_REQ_TIME_LIMIT / 1000 / 60)} minute(s) exceeded`);
+        }
+        userRequestTracker[username] = userData;
     }
 }
